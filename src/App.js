@@ -1,13 +1,12 @@
 import React from "react";
 import "./App.css";
-import Modul from "./componentes/Modul";
+// import Modul from "./componentes/Modul";
+import Input from "./componentes/Input";
 
 function App(propes) {
   return (
     <div>
-      <Modul name={propes.arr[1]} />;
-      <Modul name={propes.arr[2]} />;
-      <Modul name={propes.arr[3]} />;
+      <Input />
     </div>
   );
 }
