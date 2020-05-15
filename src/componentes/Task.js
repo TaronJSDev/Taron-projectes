@@ -1,11 +1,13 @@
 import React from "react";
 
 export default function Task(props) {
+  delfunc = () => {};
   return (
     <div>
-      {props.task.map((el, index) => {
-        <p key={index}> {el.task}</p>;
-      })}
+      <p className="plist" key={props.el.id}>
+        {props.el.taskpoint}
+      </p>
+      <button onClick={delfunc}>del</button>
     </div>
   );
 }

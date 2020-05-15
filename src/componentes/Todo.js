@@ -1,30 +1,48 @@
 import React, { Component } from "react";
+import { idgen } from "../Idgenerator";
 import Task from "./Task";
+
 export default class Todo extends Component {
   state = {
-    inpval: "",
+    inputvalue: "",
     task: [],
   };
 
-  inputchange = (event) => {
+  inputchangehandeler = (event) => {
     this.setState({
-      inpval: event.target.value,
+      inputvalue: event.target.value,
     });
   };
 
-  btnClic = () => {
-    this.setState({
-      task: [...this.state.task, { task: this.state.inpval }],
-      inpval: "",
+  btnchang = () => {
+    const taskbtn = [...this.state.task];
+    taskbtn.push({
+      id: idgen(),
+      taskpoint: this.state.inputvalue,
     });
+    this.setState({
+      inputvalue: "",
+      task: taskbtn,
+    });
+  };
+
+  btndelhandeler = (event) => {
+    // console.log(event.target.id);
   };
 
   render() {
+    const list = this.state.task.map((el) => {
+      <Task el={el} />;
+    });
+    console.log(list);
+
     return (
       <div>
-        <input onChange={this.inputchange}></input>
-        <button onClick={this.btnClic}>Add</button>
-        <Task task={this.state.task} />
+        <input
+          value={this.state.inputvalue}
+          onChange={this.inputchangehandeler}
+        ></input>
+        <button onClick={this.btnchang}>Add</button>
       </div>
     );
   }
