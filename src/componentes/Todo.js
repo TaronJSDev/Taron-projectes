@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { idgen } from "../Idgenerator";
-import Task from "./Task";
+// import Task from "./Task";
 
 export default class Todo extends Component {
   state = {
@@ -16,25 +16,39 @@ export default class Todo extends Component {
 
   btnchang = () => {
     const taskbtn = [...this.state.task];
-    taskbtn.push({
-      id: idgen(),
-      taskpoint: this.state.inputvalue,
-    });
+    if (this.state.inputvalue) {
+      taskbtn.push({
+        id: idgen(),
+        taskpoint: this.state.inputvalue,
+      });
+    }
+
     this.setState({
       inputvalue: "",
       task: taskbtn,
     });
   };
 
-  btndelhandeler = (event) => {
-    // console.log(event.target.id);
+  del = (id) => {
+    const newlist = this.state.task.filter((el) => {
+      return el.id != id;
+    });
+    this.setState({
+      task: newlist,
+    });
   };
 
   render() {
     const list = this.state.task.map((el) => {
-      <Task el={el} />;
+      return (
+        <div>
+          <p key={el.id} onClick={() => this.del(el.id)}>
+            {el.taskpoint}
+          </p>
+          {/* <button onClick={this.del}>del</button> */}
+        </div>
+      );
     });
-    console.log(list);
 
     return (
       <div>
@@ -43,6 +57,7 @@ export default class Todo extends Component {
           onChange={this.inputchangehandeler}
         ></input>
         <button onClick={this.btnchang}>Add</button>
+        {list}
       </div>
     );
   }
