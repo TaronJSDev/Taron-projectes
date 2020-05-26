@@ -1,13 +1,11 @@
 import React from "react";
 import "./App.css";
-// import Modul from "./componentes/Modul";
-// import Input from "./componentes/Input";
-import Todo from "./componentes/Todo";
+import ToDo from "./componentes/ToDoList/ToDo";
 
 function App(propes) {
   return (
     <div>
-      <Todo />
+      <ToDo />
     </div>
   );
 }
