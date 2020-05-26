@@ -1,62 +1,34 @@
 import React, { Component } from "react";
 import { idgen } from "../Idgenerator";
+import InputPart from "./InputPart";
+import Task from "./Task";
 // import Task from "./Task";
 
 export default class Todo extends Component {
   state = {
-    inputvalue: "",
     task: [],
   };
 
-  inputchangehandeler = (event) => {
-    this.setState({
-      inputvalue: event.target.value,
+  addTask = (task) => {
+    const newTask = [...this.state.task];
+    newTask.push({
+      id: idgen(),
+      task: task,
     });
-  };
-
-  btnchang = () => {
-    const taskbtn = [...this.state.task];
-    if (this.state.inputvalue) {
-      taskbtn.push({
-        id: idgen(),
-        taskpoint: this.state.inputvalue,
-      });
-    }
 
     this.setState({
-      inputvalue: "",
-      task: taskbtn,
-    });
-  };
-
-  del = (id) => {
-    const newlist = this.state.task.filter((el) => {
-      return el.id != id;
-    });
-    this.setState({
-      task: newlist,
+      task: newTask,
     });
   };
 
   render() {
     const list = this.state.task.map((el) => {
-      return (
-        <div>
-          <p key={el.id} onClick={() => this.del(el.id)}>
-            {el.taskpoint}
-          </p>
-          {/* <button onClick={this.del}>del</button> */}
-        </div>
-      );
+      return <Task key={this.state.task.id} text={this.state.task.task} />;
     });
 
     return (
       <div>
-        <input
-          value={this.state.inputvalue}
-          onChange={this.inputchangehandeler}
-        ></input>
-        <button onClick={this.btnchang}>Add</button>
+        <InputPart onAddTask={this.addTask} />
         {list}
       </div>
     );
