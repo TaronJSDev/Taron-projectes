@@ -1,40 +1,59 @@
-import React from "react";
+import React, { Component } from "react";
 
-export default function Task(props) {
+export default class Task extends Component {
   state = {
     isEdit: false,
-    editedTaxt: props.tasktexst,
+    inputvalue: this.props.tasktexst,
   };
 
-  editClick = () => {
-    this.setState({
-      isEdit: true,
-    });
+  edithendeler = () => {
+    this.setState({ isEdit: true });
   };
 
-  onSave = (event) => {
+  inputChengHendeler = (event) => {
+    this.setState({ inputvalue: event.target.value });
+  };
+
+  saveEditedTaxt = () => {
     this.setState({
       isEdit: false,
-      editedTaxt: event.target.value,
     });
   };
-  return (
-    <div>
-      <input type="checkbox" onChange={props.onCheckChange}></input>
 
-      {this.state.isEdit ? (
-        <>
-          <span>{this.state.editedTaxt}</span>
-          <button onClick={editClick}>Edit</button>
-          <button>x</button>
-        </>
-      ) : (
-        <>
-          <input value={this.state.editedTaxt}></input>
-          <button onClick={onSave}>Save</button>
-          <button>Cancel</button>
-        </>
-      )}
-    </div>
-  );
+  cancelHendeler = () => {
+    this.setState({
+      isEdit: false,
+      inputvalue: this.props.tasktexst,
+    });
+  };
+
+  deletCurrntTask = () => {
+    this.props.deletTask();
+  };
+
+  render() {
+    return (
+      <div>
+        <input type="checkbox" onChange={this.props.onCheckChange}></input>
+        {this.state.isEdit ? (
+          <>
+            {" "}
+            <input
+              type="text"
+              value={this.state.inputvalue}
+              onChange={this.inputChengHendeler}
+            ></input>
+            <button onClick={this.saveEditedTaxt}>Save</button>
+            <button onClick={this.cancelHendeler}>Cancel</button>
+          </>
+        ) : (
+          <>
+            <span>{this.state.inputvalue}</span>
+            <button onClick={this.edithendeler}>Edit</button>
+            <button onClick={this.deletCurrntTask}>x</button>
+          </>
+        )}
+      </div>
+    );
+  }
 }

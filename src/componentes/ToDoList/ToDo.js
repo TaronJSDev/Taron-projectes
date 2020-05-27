@@ -18,7 +18,7 @@ export default class ToDo extends Component {
     this.setState({ task: newtesk });
   };
 
-  checkedIdes = (Id) => {
+  checkedIdes = (Id) => () => {
     const newCheckIdes = new Set(this.state.checkedTaskIdes);
     if (newCheckIdes.has(Id)) {
       newCheckIdes.delete(Id);
@@ -31,14 +31,22 @@ export default class ToDo extends Component {
   };
 
   removeHandeler = () => {
-    const checkedTaskIdes = this.state.checkedTaskIdes;
-    const task = this.state.task;
+    const checkedTaskIdes = new Set(this.state.checkedTaskIdes);
+    let task = this.state.task;
     checkedTaskIdes.forEach((id) => {
-      task = task.filter((task) => task.id != id);
+      task = task.filter((tasks) => tasks.id != id);
     });
     this.setState({
       task: task,
       checkedIdes: new Set(),
+    });
+  };
+
+  deletTaskFromSet = (id) => () => {
+    let task = this.state.task;
+    task = task.filter((elem) => elem.id != id);
+    this.setState({
+      task: task,
     });
   };
 
@@ -48,6 +56,7 @@ export default class ToDo extends Component {
         key={elem.id}
         tasktexst={elem.taskText}
         onCheckChange={this.checkedIdes(elem.id)}
+        deletTask={this.deletTaskFromSet(elem.id)}
       />
     ));
 
