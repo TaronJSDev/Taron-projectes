@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Input from "../INPUT/Input";
 import { idgen } from "../Idgenerator";
 import Task from "../TASK/Task";
+import { Button } from "react-bootstrap";
+import classes from "todo.css";
 
 export default class ToDo extends Component {
   state = {
@@ -64,7 +66,14 @@ export default class ToDo extends Component {
       <div>
         <Input onAddClic={this.addClickHandeler} />
         {newTask}
-        <button onClick={this.removeHandeler}>remove</button>
+        {/* <button onClick={this.removeHandeler}>remove</button> */}
+        <Button
+          variant="primary"
+          onClick={this.removeHandeler}
+          className={classes.removebtn}
+        >
+          remove
+        </Button>
       </div>
     );
   }
