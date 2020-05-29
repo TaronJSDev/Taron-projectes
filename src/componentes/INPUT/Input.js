@@ -20,12 +20,6 @@ export default class Input extends Component {
   render() {
     return (
       <div>
-        {/* <input
-          value={this.state.valueOfInput}
-          onChange={this.inputChange}
-        ></input> */}
-        {/* <button onClick={this.addButtonClick}>Add</button> */}
-
         <InputGroup
           className="mb-3"
           value={this.state.valueOfInput}

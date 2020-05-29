@@ -2,13 +2,14 @@ import React, { Component } from "react";
 import Input from "../INPUT/Input";
 import { idgen } from "../Idgenerator";
 import Task from "../TASK/Task";
-import { Button } from "react-bootstrap";
-import classes from "todo.css";
+import { Button, Container, Row } from "react-bootstrap";
+import classes from "./todo.module.css";
 
 export default class ToDo extends Component {
   state = {
     task: [],
     checkedTaskIdes: new Set(),
+    isAllSelected: false,
   };
 
   addClickHandeler = (inputTaxt) => {
@@ -36,7 +37,7 @@ export default class ToDo extends Component {
     const checkedTaskIdes = new Set(this.state.checkedTaskIdes);
     let task = this.state.task;
     checkedTaskIdes.forEach((id) => {
-      task = task.filter((tasks) => tasks.id != id);
+      task = task.filter((tasks) => tasks.id !== id);
     });
     this.setState({
       task: task,
@@ -46,9 +47,29 @@ export default class ToDo extends Component {
 
   deletTaskFromSet = (id) => () => {
     let task = this.state.task;
-    task = task.filter((elem) => elem.id != id);
+    task = task.filter((elem) => elem.id !== id);
     this.setState({
       task: task,
+    });
+  };
+
+  selectall = () => {
+    const selectAllTask = new Set(this.state.task);
+    this.setState({ isAllSelected: true, checkedTaskIdes: selectAllTask });
+  };
+
+  deleteAllTask = () => {
+    this.setState({
+      isAllSelected: false,
+      checkedTaskIdes: new Set(),
+      task: [],
+    });
+  };
+
+  cancelAllSelect = () => {
+    this.setState({
+      isAllSelected: false,
+      checkedIdes: new Set(),
     });
   };
 
@@ -65,15 +86,31 @@ export default class ToDo extends Component {
     return (
       <div>
         <Input onAddClic={this.addClickHandeler} />
-        {newTask}
-        {/* <button onClick={this.removeHandeler}>remove</button> */}
-        <Button
-          variant="primary"
-          onClick={this.removeHandeler}
-          className={classes.removebtn}
-        >
-          remove
-        </Button>
+        <Container>
+          <Row> {newTask}</Row>
+        </Container>
+
+        <div className={classes.removeButton}>
+          {this.state.isAllSelected ? (
+            <>
+              <Button variant="primary" onClick={this.deleteAllTask}>
+                delete all
+              </Button>
+              <Button variant="primary" onClick={this.cancelAllSelect}>
+                cancel
+              </Button>{" "}
+            </>
+          ) : (
+            <>
+              <Button variant="primary" onClick={this.removeHandeler}>
+                remove
+              </Button>
+              <Button variant="primary" onClick={this.selectall}>
+                select all
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     );
   }
