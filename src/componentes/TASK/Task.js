@@ -1,71 +1,88 @@
 import React, { Component } from "react";
-import classes from "./task.module.css";
-import { Col } from "react-bootstrap";
+import { Col, Card, Button } from "react-bootstrap";
 
 export default class Task extends Component {
   state = {
-    isEdit: false,
-    inputvalue: this.props.tasktexst,
+    inputTaskText: this.props.value,
+    editedValue: this.props.edited,
+    isEditedTask: false,
   };
 
-  edithendeler = () => {
-    this.setState({ isEdit: true });
+  onEditClicHandeler = () => {
+    this.setState({ isEditedTask: true });
+  }; //true
+
+  onEditCancelClicHandeler = () => {
+    this.setState({ isEditedTask: false, inputTaskText: this.props.value });
+  }; //true
+
+  inputEditHandeler = (event) => {
+    this.setState({ inputTaskText: event.target.value });
   };
 
-  inputChengHendeler = (event) => {
-    this.setState({ inputvalue: event.target.value });
+  onEditSaveClicHandeler = () => {
+    this.props.saveEditedTask(this.state.inputTaskText);
+    this.setState({ isEditedTask: false });
   };
 
-  saveEditedTaxt = () => {
-    this.setState({
-      isEdit: false,
-    });
+  onDeleteTask = () => {
+    this.props.deleteCurrontTask();
   };
 
-  cancelHendeler = () => {
-    this.setState({
-      isEdit: false,
-      inputvalue: this.props.tasktexst,
-    });
-  };
-
-  deletCurrntTask = () => {
-    this.props.deletTask();
+  showMoadal = () => {
+    this.props.onshowModal();
   };
 
   render() {
     return (
-      <Col xl="1" lg="3" md="6" className={classes.col}>
-        <div>
-          <input
-            type="checkbox"
-            className={classes.checkboxes}
-            onChange={this.props.onCheckChange}
-          ></input>
+      <Col>
+        <Card style={{ width: "18rem" }}>
+          <Card.Body>
+            <input
+              type="checkbox"
+              onChange={this.props.checkboxChange}
+              checked={this.props.isTaskCheched}
+            ></input>
 
-          {this.state.isEdit ? (
-            <>
-              <input
-                type="text"
-                value={this.state.inputvalue}
-                onChange={this.inputChengHendeler}
-                className={classes.editinput}
-              ></input>
-              <div className={classes.buttones}>
-                <button onClick={this.saveEditedTaxt}>Save</button>
-                <button onClick={this.cancelHendeler}>Cancel</button>
-              </div>
-            </>
-          ) : (
-            <>
-              <span className={classes.editinput}>{this.state.inputvalue}</span>
-              <div className={classes.buttones}>
-                <button onClick={this.edithendeler}>Edit</button>
-                <button onClick={this.deletCurrntTask}>x</button>
-              </div>
-            </>
-          )}
-        </div>
+            {this.state.isEditedTask ? (
+              <>
+                <Card.Text>
+                  <input
+                    value={this.state.inputTaskText}
+                    onChange={this.inputEditHandeler}
+                  ></input>
+                </Card.Text>
+                <Button variant="primary" onClick={this.onEditSaveClicHandeler}>
+                  Save
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={this.onEditCancelClicHandeler}
+                >
+                  {" "}
+                  Cancel{" "}
+                </Button>{" "}
+              </>
+            ) : (
+              <>
+                <Card.Text>{this.state.inputTaskText}</Card.Text>
+                <Button variant="primary" onClick={this.onEditClicHandeler}>
+                  Edit
+                </Button>
+                <Button variant="primary" onClick={this.onDeleteTask}>
+                  {" "}
+                  X{" "}
+                </Button>
+              </>
+            )}
+
+            <Col>
+              <Button variant="primary" onClick={this.showMoadal}>
+                Show All
+              </Button>
+            </Col>
+          </Card.Body>
+        </Card>
       </Col>
     );
   }

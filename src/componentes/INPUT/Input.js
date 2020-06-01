@@ -1,42 +1,40 @@
 import React, { Component } from "react";
-import { Button, InputGroup, FormControl } from "react-bootstrap";
+import { Col, InputGroup, FormControl, Button } from "react-bootstrap";
 
 export default class Input extends Component {
   state = {
-    valueOfInput: "",
+    inputValue: "",
   };
 
-  inputChange = (event) => {
-    this.setState({
-      valueOfInput: event.target.value,
-    });
-  };
+  inputChengeOfInput = (event) => {
+    this.setState({ inputValue: event.target.value });
+  }; //true
 
-  addButtonClick = () => {
-    this.props.onAddClic(this.state.valueOfInput);
-    this.setState({ valueOfInput: "" });
-  };
+  addBtnClic = () => {
+    this.props.addTask(this.state.inputValue);
+    this.setState({ inputValue: "" });
+  }; //true
 
   render() {
     return (
-      <div>
-        <InputGroup
-          className="mb-3"
-          value={this.state.valueOfInput}
-          onChange={this.inputChange}
-        >
+      <Col>
+        <InputGroup className="mb-3">
           <FormControl
-            placeholder="Input task"
-            aria-label="Input task"
-            aria-describedby="basic-addon2"
+            placeholder="Recipient's username"
+            value={this.state.inputValue}
+            onChange={this.inputChengeOfInput}
           />
           <InputGroup.Append>
-            <Button variant="outline-secondary" onClick={this.addButtonClick}>
+            <Button
+              variant="outline-secondary"
+              disabled={!this.state.inputValue ? true : false}
+              onClick={this.addBtnClic}
+            >
               Add
             </Button>
           </InputGroup.Append>
         </InputGroup>
-      </div>
+      </Col>
     );
   }
 }

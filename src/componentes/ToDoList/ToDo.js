@@ -1,117 +1,135 @@
 import React, { Component } from "react";
-import Input from "../INPUT/Input";
 import { idgen } from "../Idgenerator";
+import { Container, Row, Button, Col } from "react-bootstrap";
+import Input from "../INPUT/Input";
 import Task from "../TASK/Task";
-import { Button, Container, Row } from "react-bootstrap";
-import classes from "./todo.module.css";
+import Modal from "../TaskModal/TaskModal";
 
 export default class ToDo extends Component {
   state = {
     task: [],
-    checkedTaskIdes: new Set(),
-    isAllSelected: false,
+    checkedIdes: new Set(),
+    showModal: false,
+    currntTask: null,
   };
 
-  addClickHandeler = (inputTaxt) => {
-    const newtesk = [...this.state.task];
-    newtesk.push({
+  addTaskToTheList = (task) => {
+    const newtask = [...this.state.task];
+    newtask.push({
       id: idgen(),
-      taskText: inputTaxt,
+      task: task,
     });
-    this.setState({ task: newtesk });
-  };
+    this.setState({ task: newtask });
+  }; //true
 
-  checkedIdes = (Id) => () => {
-    const newCheckIdes = new Set(this.state.checkedTaskIdes);
-    if (newCheckIdes.has(Id)) {
-      newCheckIdes.delete(Id);
+  checkboxChangeHandeler = (id) => () => {
+    const checkedIdes = new Set(this.state.checkedIdes);
+    if (checkedIdes.has(id)) {
+      checkedIdes.delete(id);
     } else {
-      newCheckIdes.add(Id);
+      checkedIdes.add(id);
     }
-    this.setState({
-      checkedTaskIdes: newCheckIdes,
+    this.setState({ checkedIdes });
+  }; //true
+
+  removeBtnClicHandeler = () => {
+    let { checkedIdes, task } = this.state;
+
+    checkedIdes.forEach((id) => {
+      task = task.filter((task) => task.id !== id);
     });
+
+    this.setState({ task });
+  }; //true
+
+  selectAllBtnClicHandeler = () => {
+    const checkedIdes = this.state.task.map((task) => task.id);
+    this.setState({ checkedIdes: new Set(checkedIdes) });
+  }; //true
+
+  deSelectAllBtnClicHandeler = () => {
+    this.setState({ checkedIdes: new Set() });
+  }; //true
+
+  saveTaskEdit = (id) => (text) => {
+    const tasks = JSON.parse(JSON.stringify(this.state.task));
+
+    for (let task of tasks) {
+      if (task.id === id) {
+        task.text = text;
+        break;
+      }
+    }
+    this.setState({ task: tasks, isEditing: false });
+  }; //true
+
+  deleteCurrontTaskHandeler = (id) => () => {
+    let newTask = [...this.state.task];
+    newTask = newTask.filter((task) => task.id !== id);
+    this.setState({ task: newTask });
+  }; //true
+
+  showModalHandeler = (task) => () => {
+    this.setState({ showModal: true, currntTask: task });
   };
 
-  removeHandeler = () => {
-    const checkedTaskIdes = new Set(this.state.checkedTaskIdes);
-    let task = this.state.task;
-    checkedTaskIdes.forEach((id) => {
-      task = task.filter((tasks) => tasks.id !== id);
-    });
-    this.setState({
-      task: task,
-      checkedIdes: new Set(),
-    });
-  };
-
-  deletTaskFromSet = (id) => () => {
-    let task = this.state.task;
-    task = task.filter((elem) => elem.id !== id);
-    this.setState({
-      task: task,
-    });
-  };
-
-  selectall = () => {
-    const selectAllTask = new Set(this.state.task);
-    this.setState({ isAllSelected: true, checkedTaskIdes: selectAllTask });
-  };
-
-  deleteAllTask = () => {
-    this.setState({
-      isAllSelected: false,
-      checkedTaskIdes: new Set(),
-      task: [],
-    });
-  };
-
-  cancelAllSelect = () => {
-    this.setState({
-      isAllSelected: false,
-      checkedIdes: new Set(),
-    });
+  modalCloseBtnClicHandeler = () => {
+    this.setState({ showModal: false, currntTask: null });
   };
 
   render() {
-    const newTask = this.state.task.map((elem) => (
+    const taskList = this.state.task.map((task) => (
       <Task
-        key={elem.id}
-        tasktexst={elem.taskText}
-        onCheckChange={this.checkedIdes(elem.id)}
-        deletTask={this.deletTaskFromSet(elem.id)}
+        key={task.id} //true
+        value={task.task} //true
+        checkboxChange={this.checkboxChangeHandeler(task.id)} //true
+        isTaskCheched={this.state.checkedIdes.has(task.id)} //true
+        saveEditedTask={this.saveTaskEdit(task.id)} //true
+        deleteCurrontTask={this.deleteCurrontTaskHandeler(task.id)}
+        onshowModal={this.showModalHandeler(task.task)}
       />
     ));
 
     return (
-      <div>
-        <Input onAddClic={this.addClickHandeler} />
-        <Container>
-          <Row> {newTask}</Row>
-        </Container>
+      <Container>
+        {this.state.showModal ? (
+          <Modal
+            onShowCurrentTask={this.state.currntTask}
+            modalCloseHandeler={this.modalCloseBtnClicHandeler}
+          />
+        ) : (
+          <>
+            {" "}
+            <Row>
+              <Input addTask={this.addTaskToTheList} />
+            </Row>
+            <Row>{taskList} </Row>
+            <Row>
+              <Col>
+                {!!this.state.task.length ? (
+                  <Button
+                    onClick={this.removeBtnClicHandeler} //true
+                    disabled={!this.state.checkedIdes.size ? true : false} //true
+                  >
+                    Remove Selected
+                  </Button>
+                ) : null}
+                {this.state.task.length !== this.state.checkedIdes.size && (
+                  <Button onClick={this.selectAllBtnClicHandeler}>
+                    Select All
+                  </Button>
+                )}
 
-        <div className={classes.removeButton}>
-          {this.state.isAllSelected ? (
-            <>
-              <Button variant="primary" onClick={this.deleteAllTask}>
-                delete all
-              </Button>
-              <Button variant="primary" onClick={this.cancelAllSelect}>
-                cancel
-              </Button>{" "}
-            </>
-          ) : (
-            <>
-              <Button variant="primary" onClick={this.removeHandeler}>
-                remove
-              </Button>
-              <Button variant="primary" onClick={this.selectall}>
-                select all
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
+                {!!this.state.checkedIdes.size && (
+                  <Button onClick={this.deSelectAllBtnClicHandeler}>
+                    Deselect All
+                  </Button>
+                )}
+              </Col>
+            </Row>
+          </>
+        )}
+      </Container>
     );
   }
 }
