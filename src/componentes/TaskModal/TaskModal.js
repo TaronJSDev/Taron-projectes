@@ -16,7 +16,13 @@ export default class TaskModal extends Component {
   };
 
   modalInputChange = (event) => {
-    this.setState({ task: event.target.value });
+    let task = JSON.parse(JSON.stringify(this.state.task));
+    task.task = event.target.value;
+    this.setState({ task });
+  };
+
+  saveModal = () => {
+    this.props.saveModalHendeler(this.state.task);
   };
 
   render() {
@@ -25,33 +31,38 @@ export default class TaskModal extends Component {
         <Col>
           <Modal.Dialog>
             <Modal.Header closeButton onClick={this.modalClose}>
-              <Modal.Title>Modal title</Modal.Title>
+              {/* <Modal.Title>Modal title</Modal.Title> */}
             </Modal.Header>
+
             {this.state.isModalEdited ? (
-              <Modal.Body>
-                <input
-                  value={this.state.task}
-                  onChange={this.modalInputChange}
-                ></input>
-              </Modal.Body>
-            ) : (
-              <Modal.Body>{this.state.task}</Modal.Body>
-            )}
-            <Modal.Footer>
-              {this.state.isModalEdited ? (
-                <>
+              <>
+                <Modal.Body>
+                  <input
+                    value={this.state.task.task}
+                    onChange={this.modalInputChange}
+                  ></input>
+                </Modal.Body>
+                <Modal.Footer>
                   <Button variant="secondary" onClick={this.modalClose}>
                     {" "}
-                    Close
+                    Close{" "}
                   </Button>
-                  <Button variant="primary">Save changes</Button>
-                </>
-              ) : (
-                <Button variant="primary" onClick={this.modalEdit}>
-                  Edit
-                </Button>
-              )}
-            </Modal.Footer>
+                  <Button variant="primary" onClick={this.saveModal}>
+                    Save changes
+                  </Button>
+                </Modal.Footer>
+              </>
+            ) : (
+              <>
+                <Modal.Body>{this.state.task.task}</Modal.Body>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={this.modalEdit}>
+                    {" "}
+                    Edit
+                  </Button>
+                </Modal.Footer>
+              </>
+            )}
           </Modal.Dialog>
         </Col>
       </Row>

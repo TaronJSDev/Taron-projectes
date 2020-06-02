@@ -69,12 +69,26 @@ export default class ToDo extends Component {
     this.setState({ task: newTask });
   }; //true
 
+  modalCloseBtnClicHandeler = () => {
+    this.setState({ showModal: false, currntTask: null });
+  };
+
   showModalHandeler = (task) => () => {
     this.setState({ showModal: true, currntTask: task });
   };
 
-  modalCloseBtnClicHandeler = () => {
-    this.setState({ showModal: false, currntTask: null });
+  modalSave = (modulTask) => {
+    let newtasks = JSON.parse(JSON.stringify(this.state.task));
+
+    for (let task of newtasks) {
+      if (task.id === modulTask.id) {
+        task.task = modulTask.task;
+        break;
+      }
+    }
+    this.setState({ task: newtasks, showModal: false });
+
+    console.log(this.state.task);
   };
 
   render() {
@@ -86,7 +100,7 @@ export default class ToDo extends Component {
         isTaskCheched={this.state.checkedIdes.has(task.id)} //true
         saveEditedTask={this.saveTaskEdit(task.id)} //true
         deleteCurrontTask={this.deleteCurrontTaskHandeler(task.id)}
-        onshowModal={this.showModalHandeler(task.task)}
+        onshowModal={this.showModalHandeler(task)}
       />
     ));
 
@@ -96,6 +110,7 @@ export default class ToDo extends Component {
           <Modal
             onShowCurrentTask={this.state.currntTask}
             modalCloseHandeler={this.modalCloseBtnClicHandeler}
+            saveModalHendeler={this.modalSave}
           />
         ) : (
           <>
